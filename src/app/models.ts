@@ -21,3 +21,8 @@ export interface Employee {
 export interface EmployeesList {
   employees: Employee[];
 }
+
+export interface SortInfo {
+  sortVal: string;
+  sortDir: 'asc' | 'desc';
+}

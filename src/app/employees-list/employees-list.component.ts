@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Employee } from '../models';
+import { Employee, EmployeesList, SortInfo } from '../models';
+import { BehaviorSubject } from 'rxjs';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-employees-list',
@@ -7,7 +9,15 @@ import { Employee } from '../models';
   styleUrls: ['./employees-list.component.css'],
 })
 export class EmployeesListComponent implements OnInit {
-  @Input() employeesList: Employee[] | undefined;
+  @Input() employeesList: BehaviorSubject<Employee[]> = new BehaviorSubject<
+    Employee[]
+  >([]);
+
+  sortedEmployeeList: Employee[] = [];
+  sortedBy: SortInfo = {
+    sortVal: 'department',
+    sortDir: 'asc',
+  };
 
   departmentColors: { [index: string]: string } = {
     HR: 'red',
@@ -27,7 +37,35 @@ export class EmployeesListComponent implements OnInit {
     return `bg-${color}-100 text-${color}-800`;
   }
 
+  // this is a horrible hack
+  sortEmployeeList(sortBy?: string): void {
+    if (sortBy != null) {
+      this.sortedBy.sortVal = sortBy;
+    } else {
+      this.sortedBy.sortVal = 'department';
+    }
+    this.toggleSortDir();
+    this.sortedEmployeeList = _.orderBy(this.sortedEmployeeList, [
+      this.sortedBy.sortVal,
+      this.sortedBy.sortDir,
+    ]);
+  }
+
+  toggleSortDir(): void {
+    if (this.sortedBy.sortDir === 'asc') {
+      this.sortedBy.sortDir = 'desc';
+    } else if (this.sortedBy.sortDir === 'desc') {
+      this.sortedBy.sortDir = 'asc';
+    } else {
+      console.error('some awful problem with sorting');
+    }
+  }
+
   ngOnInit(): void {
     console.log('EmployeeList init');
+    this.employeesList.subscribe((data) => {
+      this.sortedEmployeeList = this.employeesList.getValue();
+      this.sortEmployeeList();
+    });
   }
 }
