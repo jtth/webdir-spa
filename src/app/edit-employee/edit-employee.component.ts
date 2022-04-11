@@ -13,6 +13,7 @@ import { catchError, Observable, retry, throwError } from 'rxjs';
 export class EditEmployeeComponent implements OnInit {
   employee = new EmployeeForm();
   employeeFormGroup: FormGroup;
+  isNewEmployee: boolean = false;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -23,23 +24,50 @@ export class EditEmployeeComponent implements OnInit {
     this.employeeFormGroup = this.formBuilder.group({
       name: this.formBuilder.group({
         title: [this.employee.name.title],
-        first: [this.employee.name.first, Validators.required],
-        last: [this.employee.name.last, Validators.required],
+        first: [
+          this.employee.name.first,
+          {
+            validators: [
+              Validators.required,
+              Validators.minLength(1),
+              Validators.maxLength(255),
+            ],
+          },
+        ],
+        last: [
+          this.employee.name.last,
+          {
+            validators: [
+              Validators.required,
+              Validators.minLength(1),
+              Validators.maxLength(255),
+            ],
+          },
+        ],
       }),
-      email: [this.employee.email, Validators.required],
+      email: [
+        this.employee.email,
+        { validators: [Validators.required, Validators.email] },
+      ],
       picture: this.formBuilder.group({
         large: [this.employee.picture?.large],
         medium: [this.employee.picture?.medium],
         thumbnail: [this.employee.picture?.thumbnail],
       }),
-      department: [this.employee.department, Validators.required],
-      phone: [this.employee.phone, Validators.required],
+      department: [
+        this.employee.department,
+        { validators: [Validators.required] },
+      ],
+      phone: [this.employee.phone, { validators: [Validators.required] }],
     });
   }
 
   ngOnInit(): void {
     let employee_id = this.activatedRoute.snapshot.paramMap.get('id');
-    if (typeof employee_id === 'string') {
+    if (employee_id === 'new') {
+      this.isNewEmployee = true;
+      this.employeeFormGroup.patchValue(this.employee);
+    } else if (typeof employee_id === 'string') {
       this.getEmployee(employee_id).subscribe((data) => {
         this.employee = data as Employee;
         this.employeeFormGroup.patchValue(data);
@@ -48,8 +76,8 @@ export class EditEmployeeComponent implements OnInit {
   }
 
   onSubmit(): void {
-    console.log(this.employeeFormGroup.value);
-    if (this.employee && this.employee.id) {
+    // console.log(this.employeeFormGroup.value);
+    if (this.employee && this.employee.id && !this.isNewEmployee) {
       this.putEmployee(
         this.employee.id,
         this.employeeFormGroup.value
@@ -57,10 +85,46 @@ export class EditEmployeeComponent implements OnInit {
         console.log('response:', response);
         await this.router.navigate(['/']);
       });
+    } else if (this.employee && !this.employee.id && this.isNewEmployee) {
+      this.postEmployee(this.employeeFormGroup.value).subscribe(
+        async (response) => {
+          console.log('response:', response);
+          await this.router.navigate(['/']);
+        }
+      );
     }
   }
 
-  putEmployee(employee_id: number, employee_form: EmployeeForm): Observable<Employee> {
+  onDelete(): void {
+    if (
+      this.employee &&
+      this.employee.id &&
+      confirm('Are you sure you want to delete this employee?')
+    ) {
+      this.deleteEmployee(this.employee.id).subscribe(async (response) => {
+        console.log('response:', response);
+        alert(`Employee number ${this.employee.id} deleted`);
+        await this.router.navigate(['/']);
+      });
+    }
+  }
+
+  postEmployee(employee_form: EmployeeForm): Observable<any> {
+    return this.httpClient
+      .post<Employee>(`http://localhost:8080/api/employees/`, employee_form)
+      .pipe(catchError(this.handleError));
+  }
+
+  deleteEmployee(employee_id: number): Observable<any> {
+    return this.httpClient
+      .delete<Employee>(`http://localhost:8080/api/employees/${employee_id}`)
+      .pipe(catchError(this.handleError));
+  }
+
+  putEmployee(
+    employee_id: number,
+    employee_form: EmployeeForm
+  ): Observable<any> {
     return this.httpClient
       .put<Employee>(
         `http://localhost:8080/api/employees/${employee_id}`,

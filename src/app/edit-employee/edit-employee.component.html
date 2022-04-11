@@ -1,12 +1,18 @@
 <form *ngIf="employee" [formGroup]="employeeFormGroup" (submit)="onSubmit()" class="space-y-8 divide-y divide-gray-200">
   <div class="space-y-4 divide-y divide-gray-200">
-    <div>
-      <h3 *ngIf="employee" class="text-lg leading-6 font-medium text-gray-900">
+    <div class="flex justify-between items-center">
+      <h3 *ngIf="!isNewEmployee" class="text-lg leading-6 font-medium text-gray-900">
         Editing {{employee.name.first}} {{employee.name.last}}
       </h3>
-      <h3 *ngIf="!employee" class="text-lg leading-6 font-medium text-gray-900">
+      <h3 *ngIf="isNewEmployee" class="text-lg leading-6 font-medium text-gray-900">
         New Employee
       </h3>
+
+        <button *ngIf="!this.isNewEmployee" type="button" (click)="onDelete()"
+                class="bg-white py-2 px-4 border border-rose-300 rounded-md shadow-sm text-sm font-medium text-rose-700 hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Delete!
+        </button>
+
     </div>
     <div class="pt-4">
 
@@ -17,24 +23,24 @@
             <label for="title" class="block text-sm font-medium text-gray-700"> Title </label>
             <div class="mt-1">
               <input formControlName="title" type="text" name="name.title" id="title" autocomplete="title"
-                     class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                     class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500">
             </div>
           </div>
-
+          <div class="sm:col-span-3 lg:col-span-3"></div>
           <!-- name.first -->
           <div class="sm:col-span-3">
             <label for="first-name" class="block text-sm font-medium text-gray-700"> First name </label>
             <div class="mt-1">
-              <input formControlName="first" type="text" name="first-name" id="first-name" autocomplete="given-name"
-                     class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
+              <input formControlName="first" required type="text" name="first-name" id="first-name" autocomplete="given-name"
+                     class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500" />
             </div>
           </div>
           <!-- name.last -->
           <div class="sm:col-span-3">
             <label for="last-name" class="block text-sm font-medium text-gray-700"> Last name </label>
             <div class="mt-1">
-              <input formControlName="last" type="text" name="last-name" id="last-name" autocomplete="family-name"
-                     class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
+              <input formControlName="last" required type="text" name="last-name" id="last-name" autocomplete="family-name"
+                     class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500" />
             </div>
           </div>
         </div>
@@ -43,16 +49,16 @@
           <div class="sm:col-span-3">
             <label for="email" class="block text-sm font-medium text-gray-700"> Email address </label>
             <div class="mt-1">
-              <input formControlName="email" id="email" name="email" type="email" autocomplete="email"
-                     class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
+              <input formControlName="email" required id="email" name="email" type="email" autocomplete="email"
+                     class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500" />
             </div>
           </div>
           <!-- department -->
           <div class="sm:col-span-3">
             <label for="department" class="block text-sm font-medium text-gray-700"> Department </label>
             <div class="mt-1">
-              <select formControlName="department" id="department" name="department" autocomplete="department-name"
-                      class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+              <select formControlName="department" required id="department" name="department" autocomplete="department-name"
+                      class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500">
                 <option>Engineering</option>
                 <option>HR</option>
                 <option>Legal</option>
@@ -64,9 +70,9 @@
           <div class="sm:col-span-3">
             <label for="phone-number" class="block text-sm font-medium text-gray-700"> Phone number </label>
             <div class="mt-1">
-              <input formControlName="phone" type="tel" name="phone-number" id="phone-number"
+              <input formControlName="phone" required type="tel" name="phone-number" id="phone-number"
                      autocomplete="street-address"
-                     class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
+                     class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500" />
             </div>
           </div>
         </div>
@@ -77,7 +83,7 @@
           <label for="avatar-url" class="block text-sm font-medium text-gray-700"> Avatar thumbnail URL </label>
           <div class="mt-1">
             <input formControlName="thumbnail" type="url" name="avatar-url" id="avatar-url" autocomplete="picture"
-                   class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
+                   class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500" />
           </div>
         </div>
         </div>
@@ -87,12 +93,12 @@
 
   <div class="pt-5">
     <div class="flex justify-end">
-      <button type="button"
+      <button type="button" routerLink="/"
               class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
         Cancel
       </button>
       <button type="submit"
-              class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
               [disabled]="!employeeFormGroup?.valid">
         Save
       </button>
