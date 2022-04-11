@@ -1,20 +1,18 @@
-<form *ngIf="employee" [formGroup]="employeeFormGroup" (submit)="onSubmit()" class="space-y-8 divide-y divide-gray-200">
+<form [formGroup]="employeeFormGroup" (submit)="onSubmit()">
   <div class="space-y-4 divide-y divide-gray-200">
     <div class="flex justify-between items-center">
-      <h3 *ngIf="!isNewEmployee" class="text-xl font-semibold text-gray-900">
-        Editing {{employee.name.first}} {{employee.name.last}}
-      </h3>
-      <h3 [hidden]="!isNewEmployee" class="text-xl font-semibold text-gray-900">
-        New Employee
+      <h3 class="text-xl font-semibold text-gray-900">
+        <span *ngIf="!isNewEmployee">Editing {{employee.name.first}} {{employee.name.last}}</span>
+        <span *ngIf="isNewEmployee">New Employee</span>
       </h3>
 
-        <button *ngIf="!isNewEmployee" type="button" (click)="onDelete()"
-                class="bg-white py-2 px-4 border border-rose-300 rounded-md shadow-sm text-sm font-medium text-rose-700 hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-          Delete!
-        </button>
-
+      <button *ngIf="!isNewEmployee" type="button" (click)="onDelete()"
+              class="bg-white py-2 px-4 border border-rose-300 rounded-md shadow-sm text-sm font-medium text-rose-700 hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        Delete!
+      </button>
     </div>
-    <div class="pt-4">
+
+    <div class="pt-0">
 
       <div>
         <div formGroupName="name" class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
@@ -31,7 +29,8 @@
           <div class="sm:col-span-3">
             <label for="first-name" class="block text-sm font-medium text-gray-700"> First name </label>
             <div class="mt-1">
-              <input formControlName="first" required type="text" name="first-name" id="first-name" autocomplete="given-name"
+              <input formControlName="first" required type="text" name="first-name" id="first-name"
+                     autocomplete="given-name"
                      class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500" />
             </div>
           </div>
@@ -39,7 +38,8 @@
           <div class="sm:col-span-3">
             <label for="last-name" class="block text-sm font-medium text-gray-700"> Last name </label>
             <div class="mt-1">
-              <input formControlName="last" required type="text" name="last-name" id="last-name" autocomplete="family-name"
+              <input formControlName="last" required type="text" name="last-name" id="last-name"
+                     autocomplete="family-name"
                      class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500" />
             </div>
           </div>
@@ -57,7 +57,8 @@
           <div class="sm:col-span-3">
             <label for="department" class="block text-sm font-medium text-gray-700"> Department </label>
             <div class="mt-1">
-              <select formControlName="department" required id="department" name="department" autocomplete="department-name"
+              <select formControlName="department" required id="department" name="department"
+                      autocomplete="department-name"
                       class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500">
                 <option>Engineering</option>
                 <option>HR</option>
@@ -78,14 +79,14 @@
         </div>
 
         <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-        <!-- picture -->
-        <div class="sm:col-span-3" formGroupName="picture">
-          <label for="avatar-url" class="block text-sm font-medium text-gray-700"> Avatar thumbnail URL </label>
-          <div class="mt-1">
-            <input formControlName="thumbnail" type="url" name="avatar-url" id="avatar-url" autocomplete="picture"
-                   class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500" />
+          <!-- picture -->
+          <div class="sm:col-span-3" formGroupName="picture">
+            <label for="avatar-url" class="block text-sm font-medium text-gray-700"> Avatar thumbnail URL </label>
+            <div class="mt-1">
+              <input formControlName="thumbnail" type="url" name="avatar-url" id="avatar-url" autocomplete="picture"
+                     class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none invalid:border-pink-500 invalid:text-pink-600 focus:invalid:border-pink-500 focus:invalid:ring-pink-500" />
+            </div>
           </div>
-        </div>
         </div>
       </div>
     </div>

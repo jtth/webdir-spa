@@ -18,7 +18,32 @@ import { DataTableDirective } from 'angular-datatables';
 export class EmployeesListComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
-  dtOptions: DataTables.Settings = {};
+  dtOptions: DataTables.Settings = {
+    pagingType: 'full_numbers',
+    pageLength: 20,
+    lengthChange: false,
+    columnDefs: [{ orderable: false, targets: 3 }], // disable sorting the "edit" column
+    language: {
+      decimal: '',
+      emptyTable: 'No employee data available in table',
+      info: 'Showing _START_ to _END_ of _TOTAL_ employees',
+      infoEmpty: 'Showing 0 to 0 of 0 employees',
+      infoFiltered: '(filtered from _MAX_ total employees)',
+      infoPostFix: '',
+      thousands: ',',
+      lengthMenu: 'Show _MENU_ entries',
+      loadingRecords: 'Loading...',
+      processing: 'Processing...',
+      search: 'Search:',
+      zeroRecords: 'No matching employees found',
+      paginate: {
+        first: 'First',
+        last: 'Last',
+        next: 'Next',
+        previous: 'Previous',
+      },
+    },
+  };
   dtTrigger: Subject<any> = new Subject<any>();
   employees: Employee[] = [];
 
@@ -44,30 +69,6 @@ export class EmployeesListComponent
   }
 
   ngOnInit(): void {
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 20,
-      language: {
-        decimal: '',
-        emptyTable: 'No employee data available in table',
-        info: 'Showing _START_ to _END_ of _TOTAL_ employees',
-        infoEmpty: 'Showing 0 to 0 of 0 employees',
-        infoFiltered: '(filtered from _MAX_ total employees)',
-        infoPostFix: '',
-        thousands: ',',
-        lengthMenu: 'Show _MENU_ entries',
-        loadingRecords: 'Loading...',
-        processing: 'Processing...',
-        search: 'Search:',
-        zeroRecords: 'No matching employees found',
-        paginate: {
-          first: 'First',
-          last: 'Last',
-          next: 'Next',
-          previous: 'Previous',
-        },
-      },
-    };
     this.httpClient
       .get<EmployeesList[]>('http://localhost:8080/api/employees/')
       .subscribe((data) => {
