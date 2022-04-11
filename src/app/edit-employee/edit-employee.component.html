@@ -1,14 +1,14 @@
 <form *ngIf="employee" [formGroup]="employeeFormGroup" (submit)="onSubmit()" class="space-y-8 divide-y divide-gray-200">
   <div class="space-y-4 divide-y divide-gray-200">
     <div class="flex justify-between items-center">
-      <h3 *ngIf="!isNewEmployee" class="text-lg leading-6 font-medium text-gray-900">
+      <h3 *ngIf="!isNewEmployee" class="text-xl font-semibold text-gray-900">
         Editing {{employee.name.first}} {{employee.name.last}}
       </h3>
-      <h3 *ngIf="isNewEmployee" class="text-lg leading-6 font-medium text-gray-900">
+      <h3 [hidden]="!isNewEmployee" class="text-xl font-semibold text-gray-900">
         New Employee
       </h3>
 
-        <button *ngIf="!this.isNewEmployee" type="button" (click)="onDelete()"
+        <button *ngIf="!isNewEmployee" type="button" (click)="onDelete()"
                 class="bg-white py-2 px-4 border border-rose-300 rounded-md shadow-sm text-sm font-medium text-rose-700 hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
           Delete!
         </button>
@@ -106,6 +106,6 @@
   </div>
 </form>
 
-<code>
-  {{employeeFormGroup?.value | json}}
-</code>
+<!--<code>-->
+<!--  {{employeeFormGroup?.value | json}}-->
+<!--</code>-->

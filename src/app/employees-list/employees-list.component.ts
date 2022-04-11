@@ -22,23 +22,25 @@ export class EmployeesListComponent
   dtTrigger: Subject<any> = new Subject<any>();
   employees: Employee[] = [];
 
+  // make tailwind/postcss happy by being explicit so it can load the colors
   departmentColors: { [index: string]: string } = {
-    HR: 'red',
-    Engineering: 'green',
-    Marketing: 'cyan',
-    Legal: 'yellow',
+    hr: 'bg-red-100 text-red-800',
+    engineering: 'bg-green-100 text-green-800',
+    marketing: 'bg-cyan-100 text-cyan-800',
+    legal: 'bg-yellow-100 text-yellow-800',
   };
 
   constructor(private httpClient: HttpClient) {}
 
   departmentClass(department: string | undefined): string {
-    let color: string;
-    if (department && Object.keys(this.departmentColors).includes(department)) {
-      color = this.departmentColors[`${department}`];
+    if (
+      department &&
+      Object.keys(this.departmentColors).includes(department.toLowerCase())
+    ) {
+      return this.departmentColors[`${department.toLowerCase()}`];
     } else {
-      color = 'slate';
+      return 'bg-slate-100 text-slate-800';
     }
-    return `bg-${color}-100 text-${color}-800`;
   }
 
   ngOnInit(): void {
