@@ -1,8 +1,20 @@
 @tailwind base;
 
 @layer base {
-
+  label {
+    @apply font-medium text-gray-900 text-sm;
+  }
+  body {
+    @apply font-medium text-sm text-gray-900;
+  }
 }
 
 @tailwind components;
 @tailwind utilities;
+
+.dataTables_wrapper .dataTables_filter {
+}
+
+.dataTables_wrapper .dataTables_filter input {
+  @apply font-medium text-sm text-gray-900 m-2;
+}
