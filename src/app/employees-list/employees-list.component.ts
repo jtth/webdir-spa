@@ -1,23 +1,26 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Employee, EmployeesList, SortInfo } from '../models';
-import { BehaviorSubject } from 'rxjs';
-import * as _ from 'lodash';
+import {
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { Employee, EmployeesList } from '../models';
+import { Subject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { DataTableDirective } from 'angular-datatables';
 
 @Component({
   selector: 'app-employees-list',
   templateUrl: './employees-list.component.html',
   styleUrls: ['./employees-list.component.css'],
 })
-export class EmployeesListComponent implements OnInit {
-  @Input() employeesList: BehaviorSubject<Employee[]> = new BehaviorSubject<
-    Employee[]
-  >([]);
-
-  sortedEmployeeList: Employee[] = [];
-  sortedBy: SortInfo = {
-    sortVal: 'department',
-    sortDir: 'asc',
-  };
+export class EmployeesListComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
+  dtOptions: DataTables.Settings = {};
+  dtTrigger: Subject<any> = new Subject<any>();
+  employees: Employee[] = [];
 
   departmentColors: { [index: string]: string } = {
     HR: 'red',
@@ -25,7 +28,8 @@ export class EmployeesListComponent implements OnInit {
     Marketing: 'cyan',
     Legal: 'yellow',
   };
-  constructor() {}
+
+  constructor(private httpClient: HttpClient) {}
 
   departmentClass(department: string | undefined): string {
     let color: string;
@@ -37,35 +41,45 @@ export class EmployeesListComponent implements OnInit {
     return `bg-${color}-100 text-${color}-800`;
   }
 
-  // this is a horrible hack
-  sortEmployeeList(sortBy?: string): void {
-    if (sortBy != null) {
-      this.sortedBy.sortVal = sortBy;
-    } else {
-      this.sortedBy.sortVal = 'department';
-    }
-    this.toggleSortDir();
-    this.sortedEmployeeList = _.orderBy(this.sortedEmployeeList, [
-      this.sortedBy.sortVal,
-      this.sortedBy.sortDir,
-    ]);
-  }
-
-  toggleSortDir(): void {
-    if (this.sortedBy.sortDir === 'asc') {
-      this.sortedBy.sortDir = 'desc';
-    } else if (this.sortedBy.sortDir === 'desc') {
-      this.sortedBy.sortDir = 'asc';
-    } else {
-      console.error('some awful problem with sorting');
-    }
-  }
-
   ngOnInit(): void {
-    console.log('EmployeeList init');
-    this.employeesList.subscribe((data) => {
-      this.sortedEmployeeList = this.employeesList.getValue();
-      this.sortEmployeeList();
-    });
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      pageLength: 20,
+      language: {
+        decimal: '',
+        emptyTable: 'No employee data available in table',
+        info: 'Showing _START_ to _END_ of _TOTAL_ employees',
+        infoEmpty: 'Showing 0 to 0 of 0 employees',
+        infoFiltered: '(filtered from _MAX_ total employees)',
+        infoPostFix: '',
+        thousands: ',',
+        lengthMenu: 'Show _MENU_ entries',
+        loadingRecords: 'Loading...',
+        processing: 'Processing...',
+        search: 'Search:',
+        zeroRecords: 'No matching employees found',
+        paginate: {
+          first: 'First',
+          last: 'Last',
+          next: 'Next',
+          previous: 'Previous',
+        },
+      },
+    };
+    this.httpClient
+      .get<EmployeesList[]>('http://localhost:8080/api/employees/')
+      .subscribe((data) => {
+        this.employees = (data as any).employees;
+        // @ts-ignore
+        this.dtTrigger.next();
+      });
+  }
+
+  ngAfterViewInit() {
+    console.log('AfterViewInit');
+  }
+
+  ngOnDestroy(): void {
+    this.dtTrigger.unsubscribe();
   }
 }
