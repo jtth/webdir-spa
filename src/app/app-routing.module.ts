@@ -15,7 +15,7 @@ const routes: Routes = [
   {
     path: '**',
     component: PageNotFoundComponent,
-    data: { animation: 2 },
+    data: { animation: 1 },
   },
 ];
 

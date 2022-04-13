@@ -4,6 +4,7 @@ import { Employee, EmployeeForm } from '../models';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { catchError, Observable, retry, throwError } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-edit-employee',
@@ -111,13 +112,13 @@ export class EditEmployeeComponent implements OnInit {
 
   postEmployee(employee_form: EmployeeForm): Observable<any> {
     return this.httpClient
-      .post<Employee>(`http://localhost:8080/api/employees/`, employee_form)
+      .post<Employee>(`${environment.apiUrl}/employees/`, employee_form)
       .pipe(catchError(this.handleError));
   }
 
   deleteEmployee(employee_id: number): Observable<any> {
     return this.httpClient
-      .delete<Employee>(`http://localhost:8080/api/employees/${employee_id}`)
+      .delete<Employee>(`${environment.apiUrl}/employees/${employee_id}`)
       .pipe(catchError(this.handleError));
   }
 
@@ -127,7 +128,7 @@ export class EditEmployeeComponent implements OnInit {
   ): Observable<any> {
     return this.httpClient
       .put<Employee>(
-        `http://localhost:8080/api/employees/${employee_id}`,
+        `${environment.apiUrl}/employees/${employee_id}`,
         employee_form
       )
       .pipe(catchError(this.handleError));
@@ -135,7 +136,7 @@ export class EditEmployeeComponent implements OnInit {
 
   getEmployee(employee_id: string): Observable<Employee> {
     return this.httpClient
-      .get<Employee>(`http://localhost:8080/api/employees/${employee_id}`)
+      .get<Employee>(`${environment.apiUrl}/employees/${employee_id}`)
       .pipe(retry(3), catchError(this.handleError));
   }
 

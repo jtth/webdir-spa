@@ -1,14 +1,8 @@
-import {
-  AfterViewInit,
-  Component,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { Employee, EmployeesList } from '../models';
-import { Subject } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { DataTableDirective } from 'angular-datatables';
+import { catchError, retry, Subject, throwError } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-employees-list',
@@ -22,7 +16,7 @@ export class EmployeesListComponent
     pagingType: 'full_numbers',
     pageLength: 20,
     lengthChange: false,
-    columnDefs: [{ orderable: false, targets: 3 }], // disable sorting the "edit" column
+    columnDefs: [{ orderable: false, searchable: false, targets: 3 }], // disable the "edit" column
     language: {
       decimal: '',
       emptyTable: 'No employee data available in table',
@@ -70,7 +64,8 @@ export class EmployeesListComponent
 
   ngOnInit(): void {
     this.httpClient
-      .get<EmployeesList[]>('http://localhost:8080/api/employees/')
+      .get<EmployeesList[]>(`${environment.apiUrl}/employees/`)
+      .pipe(retry(3), catchError(this.handleError))
       .subscribe((data) => {
         this.employees = (data as any).employees;
         // @ts-ignore
@@ -84,5 +79,18 @@ export class EmployeesListComponent
 
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'Unknown error!';
+    if (error.error instanceof ErrorEvent) {
+      // Client-side errors
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // Server-side errors
+      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+    }
+    window.alert(errorMessage);
+    return throwError(() => errorMessage);
   }
 }

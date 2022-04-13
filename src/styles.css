@@ -16,5 +16,5 @@
 }
 
 .dataTables_wrapper .dataTables_filter input {
-  @apply font-medium text-sm text-gray-900 m-2;
+  @apply font-medium text-sm text-gray-900 m-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md;
 }
